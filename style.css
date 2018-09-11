@@ -1,0 +1,283 @@
+body, html {
+    margin: 0;
+    padding: 0;
+}
+/*so as to be able to set bgcol to whole screen*/
+.screen {
+    min-height: 200%;
+    min-width: 200%;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+li {
+    list-style: none;
+}
+li a {
+    display: block;
+    width: 60px;
+    overflow: scroll;
+}
+ul, nav {
+    float: left;
+    padding: 0;
+}
+input[class=toggle]:checked + label {
+    opacity: .4;
+    text-decoration: line-through;
+}
+/*image for list add button*/
+li svg {
+    width: 25px;
+    height: 25px;
+    margin-top: 8px;
+}
+li svg:hover {
+    color: white;
+}
+/*allows for correct spacing*/
+.innerlist,
+.editli
+.editin {
+    height: 15px;
+}
+/*editing*/
+.editli,
+.carded {
+    margin: 3px 0px 0px 20px;
+    font-size: 10pt;
+    float: right;
+}
+/*modal close button*/
+.modal-close {
+    font-size: 14pt;
+}
+.main {
+    padding: 20px;
+}
+.container {
+    float: left;
+}
+/*style of navbar*/
+.navbar {
+    margin: 0;
+    font-size: 100%;
+    width: auto;
+ }
+.nav-item label:hover {
+    color: white;
+}
+.arrow {
+    color: white;
+}
+/*styles the card itself*/
+.card-head {
+    text-align: center;
+    border-radius: 25px 25px 0 0;
+    border: solid 1px #C8C8C8;
+}
+.card-footer {
+    text-align: center;
+    border: solid 1px #C8C8C8;
+}
+/*title styling*/
+.card-title {
+    border: solid white 2px;
+}
+.card-title:hover,
+.removeC:hover {
+    opacity: .6;
+}
+/*remove buttons*/
+.removeC,
+.collC
+{
+    font-size: 10pt;
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+.editU {
+    width: 120px;
+    overflow: scroll;
+}
+/*number tasks remaining*/
+.numleft {
+    font-size: 10pt;
+    margin-bottom: 8px;
+    margin-top: 0;
+}
+.removeT {
+    opacity: .3;
+}
+.removeT:hover {
+    opacity: 1;
+}
+/*some of the modal css taken and modified from Vue tutorial on modals, but it was edited to fit this project*/
+.modal-out {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    display: table;
+    transition: opacity .3s ease;
+}
+.modal-mid {
+    display: table-cell;
+    vertical-align: middle;
+}
+.modal-in {
+    width: 40%;
+    height: 90%;
+    overflow: scroll;
+    margin: 0px auto;
+    padding: 20px 30px;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+    transition: all .3s ease;
+}
+.modal-header {
+    font-size: 20pt;
+    width: 100%;
+    overflow: scroll;
+}
+.modal-description p {
+    margin: 5px;
+}
+.modal-main {
+    width: 100%;
+    overflow: scroll;
+}
+/*inner comment list: some things are hard coded with pixel values, but scrolling allows it to fit responsive styling -- I wanted to maintain some similar heights across all screen sizes*/
+.inlist {
+    height: 100px;
+    width: 50%;
+    overflow: scroll;
+    padding: 10px;
+    border: 1px solid lightgrey;
+}
+.inusers {
+    height: 100px;
+    overflow: scroll;
+    padding: 10px;
+}
+.inlabel {
+    font-size: 10pt;
+}
+.liimg {
+    width: 70%;
+}
+.pics {
+    text-align: center;
+    height: 200px;
+    overflow: scroll
+}
+#inputt {
+    border-radius: 0 0 25px 25px;
+}
+#inputc {
+    margin-top: 10px;
+}
+/*profile picture style*/
+#profpic {
+    max-width: 330px;
+}
+/*Trellooooo?*/
+#logo {
+    color: white;
+    font-weight: bold;
+    border: solid black 2px;
+}
+/*some pixel values are hard coded, but they remain responsive because they change with screen size. it allowed me to maintain readability and spacing in some important cases*/
+/*for smallest screen width*/
+@media only screen and (max-width: 500px) {
+    body {
+        font-size: 10pt;
+    }
+    .card-title {
+        overflow: scroll;
+        width: 6rem;
+        font-size: 18pt;
+        margin: 22px 0px 0px 0px;
+    }
+    .todo {
+        width:14em;
+    }
+    .percard {
+        width: 14em;
+        margin: 3px;
+    }
+    .itembtn {
+        width: 9rem;
+        overflow: scroll;
+        border: solid white 2px;
+    }
+    .nav-item label {
+        border: solid white 2px;
+        font-size: 10pt;
+        margin: 1px;
+    }
+}
+/*for medium screen width*/
+@media only screen and (min-width: 500px) {
+    body {
+        font-size: 12pt;
+        background-color: peachpuff;
+    }
+    .card-title {
+        overflow: scroll;
+        width: 10rem;
+        font-size: 18pt;
+        margin: 22px 0px 0px 0px;
+    }
+    .todo {
+        width:20em;
+    }
+    .percard {
+        width: 20em;
+        margin: 10px;
+    }
+    .itembtn {
+        width: 8.4rem;
+        overflow: scroll;
+        border: solid white 2px;
+    }
+    .nav-item label {
+        border: solid white 2px;
+        font-size: 12pt;
+        margin: 3px;
+    }
+
+}
+/*for largest screen width*/
+@media only screen and (min-width: 992px) {
+    body {
+        font-size: 12pt;
+    }
+    .card-title {
+        overflow: scroll;
+        width: 12rem;
+        font-size: 24pt;
+        margin: 22px 0px 0px 0px;
+    }
+    .todo {
+        width:20em;
+    }
+    .percard {
+        width: 20em;
+        margin: 10px;
+    }
+    .itembtn {
+        width: 8.4rem;
+        overflow: scroll;
+        border: solid white 2px;
+    }
+    .nav-item label {
+        border: solid white 2px;
+        font-size: 17pt;
+        margin: 5px;
+    }
+}
+

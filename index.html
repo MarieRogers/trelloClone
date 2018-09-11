@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Marie Rogers">
+        <meta http-equiv="Cache-Control" content="no-cache" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vuefire/1.4.5/vuefire.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="style.css">
+        <script src="trello.js" async></script>
+        <title>Trello Clone</title>
+    </head> 
+    <body>
+
+        <div class="container">
+            <div id="todoapp" v-cloak>
+                <!--The sign up/in modal-->
+                <template v-if="startscreen == true">
+                    <div class="modal-out">
+                        <div class="modal-mid">
+                            <div class="modal-in" :style="{'background-color': 'white' }">
+                                <div class="modal-header">
+                                    <label>Welcome!</label>
+                                </div>
+                                <div class="modal-body">
+                                    <h4>Sign Up</h4>
+                                    <form @submit.prevent="storeImage(users, random)">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <input v-model="Name" type="name" class="form-control" id="Name" placeholder="Enter name">
+                                            </div>
+                                            <label>Email address</label>
+                                            <input v-model="Email" type="email" class="form-control" id="Email" aria-describedby="emailHelp" placeholder="Enter email">
+                                        </div>
+                                        <div class="form-group">
+                                            <p>
+                                                <label class="imgTitle">Image</label>
+                                            </p>
+                                            <input type="file" id="files" name="files[]" />
+                                        </div>
+                                        <button type="submit" class="btn">Submit</button>
+                                    </form>
+                                    <form @submit.prevent="SignIn(users, random)">
+                                        <div class="form-group">
+                                            <!--to sign in, checks if user is in database-->
+                                            <h4>Sign In</h4>
+                                            <div class="form-group">
+                                                <label>Enter Email</label>
+                                                <input v-model="Usr" type="eml" class="form-control" id="Usr" placeholder="Enter email">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <!--navbar: contains features including changing layout, customizing, etc-->
+                <div class="screen" :style="{'background-color': bgcol, 'background-image' : urlImg(bgimg) }">
+                    <div class="navbar" :style="{'background-color': sbcol}">
+                        <form class="form-inline">
+                            <div class="nav-item">
+                                <label class="btn" id="logo">Trelloooooo?</label>
+                            </div>
+                            <!--profile-->
+                            <div class="nav-item">
+                                <label class="btn data-toggle" id="profbtn" data-target="#profdrop" data-toggle="collapse" aria-haspopup="true" aria-expanded="false">Profile</label>
+                                <div class="collapse" id="profdrop" >
+                                    <img id="profpic" :src="Image" alt="altimg">
+                                    <p>
+                                        <label class="usedit" v-if="!userE">{{Name}}</label>
+                                        <label class="named btn" @click="userEdit(users)" v-if="!userE">edit</label>
+                                        <input class="editU" v-model="Name2" placeholder="re-enter name" v-if="userE" @keyup.enter="userEdit(users)" type="text">
+                                    </p><p>
+                                    <label class="usedit" v-if="!userE">{{Email}}</label>
+                                    <label class="emailed btn" @click="userEdit(users)" v-if="!userE">edit</label>
+                                    <input class="editU" v-model="Email2" placeholder="re-enter email" v-if="userE" @keyup.enter="userEdit(users)" type="text">
+                                    </p>
+
+                                    <label class="imgEdit">Choose a new image:</label>
+                                    <input type="file" id="profiles" name="files[]" /><p></p>
+                                    <label class="btn" @click="editUImg(users)">Update Image</label>
+                                </div>
+                            </div>
+                            <!--customize-->
+                            <div class="nav-item">
+                                <label class="btn data-toggle" data-target="#sbcollapse" data-toggle="collapse" aria-haspopup="true" aria-expanded="false" @click="otherPush">Customize</label>
+                                <div class="collapse" id="sbcollapse">
+                                    <h6>suggested background colors</h6>
+                                    <select v-model="bgcol" @click="otherPush">  
+                                        <option v-for="option in bgOptions" :value="option.value2" >{{ option.text }}</option>
+                                    </select>
+                                    <h6>suggested navbar colors</h6>
+                                    <select v-model="sbcol" @click="otherPush">  
+                                        <option v-for="option in bgOptions" :value="option.value1">{{ option.text }}</option>
+                                    </select>
+                                    <h6>suggested background images</h6>
+                                    <select v-model="bgimg" @click="otherPush">  
+                                        <option v-for="option in bgImages" :value="option.value">{{ option.text }}</option>
+                                    </select>
+                                    <h6>choose background color</h6>
+                                    <input v-model="bgcol" @click="otherPush" placeholder="enter background color" @keyup.enter="otherPush"> 
+                                    <h6>choose navbar color</h6>
+                                    <input v-model="sbcol" @click="otherPush" placeholder="enter navbar color" @keyup.enter="otherPush"> 
+                                    <h6 class="imgEdit">Choose an image</h6>
+                                    <input type="file" id="bgimgs" name="files[]" /><p></p>
+                                    <button class="btn" @click.prevent="SetbgImg(users, random)">Add Image</button>
+                                    <button class="btn" @click.prevent="clearBg">Clear background image</button>
+                                </div>
+                            </div>
+                            <!--layout-->
+                            <div class="nav-item">
+                                <label class="btn" @click="changeLayout">Change Layout</label>
+                            </div>
+                            <!--list filter-->
+                            <div class="nav-item">
+                                <label class="btn data-toggle" data-target="#filtercollapse" data-toggle="collapse" aria-haspopup="true" aria-expanded="false">Filter Lists</label>
+                                <div class="collapse" id="filtercollapse">
+                                    <div>
+                                        <h6>Choose categories:</h6>
+                                        <ul>
+                                            <li class="filtercat" v-for="cat in cardCats(cards)">
+                                                <div>
+                                                    <input type="checkbox" checked="checked" @click="checkCatBox(cat, cards)" v-cloak>
+                                                    <div class="btn">{{ cat.title }}</div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--card filter-->
+                            <div class="nav-item">
+                                <label class="btn data-toggle" data-target="#filtercollapse2" data-toggle="collapse" aria-haspopup="true" aria-expanded="false">Filter Cards</label>
+                                <div class="collapse" id="filtercollapse2">
+                                    <div>
+                                        <h6>Choose categories:</h6>
+                                        <ul>
+                                            <li class="filtercat" v-for="cat in todoCats(cards)">
+                                                <div >
+                                                    <input type="checkbox" checked="checked" @click="checkTCat(cat, cards)" v-cloak>
+                                                    <div class="btn">{{ cat }}</div>
+                                                </div>
+
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <input class="filterdate" placeholder="m/d/yyyy" v-model="filDate">
+                                        <label @click="filterDate(cards)">filter by date created</label>
+                                        <label @click="showAll(cards)">show all</label>
+                                    </div>
+
+                                </div>
+
+                                <!--activity log-->
+                            </div>
+                            <div class="nav-item">
+                                <label class="btn data-toggle" id="actbtn" data-target="#activities" data-toggle="collapse" aria-haspopup="true" aria-expanded="false">Activity Log</label>
+                                <div class="collapse" id="activities">
+                                    <ul>
+                                        <li class="acts" v-for="act of actions">
+                                            <div>Action: "{{act.action}}"; todo: {{act.todo}}; card: {{act.card}}; date: {{act.date}}</div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <!--adding a new list-->
+                    <div class="main">
+                        <div id="inputc" v-cloak>
+                            <input class="new-card" placeholder="Add a new card" v-model="newCard" @keyup.enter="addCard">
+                            <input class="new-descrip" placeholder="Add a description" v-model="newDescrip" @keyup.enter="addCard">
+                            <input class="new-list" v-model="newCardCol" placeholder="Choose color" @keyup.enter="addCard"> 
+                            <input class="new-category" placeholder="Add a category" v-model="newCat" @keyup.enter="addCard">
+                        </div>
+                        <!--the deck of lists displayed: includes movement, removal, etc-->
+                        <div class="card-deck">
+                            <ul id="card-list" :style="{ 'display' : dis }">
+                                <li class="percard" v-for="(card, index) in cards" >
+                                    <div class="singlecard" :style="{ 'display' : card.show }">
+                                        <div class="card-head card-block" :style="{'background-color': card.headcol}">
+                                            <label v-if="index!=0" class="cardright btn arrow" @click="cardLeft(cards2, cards, card, index)">&larr;</label>
+                                            <label class="card-title btn" @click="toggleCModal(card)" v-html="card.name"></label>
+                                            <label v-if="index!=(cards.length - 1)" class="cardright btn arrow" @click="cardRight(cards2, cards, card, index)">&rarr;</label>
+                                            <p>
+                                                <label class="btn collC" @click="hideList(card)">{{ card.collapse }}</label>
+                                                <label class="removeC btn" @click="removeCard(card)">remove</label></p><p>
+                                            <label class="numleft">Tasks remaining: {{card.l}} </label>
+                                            </p>
+                                        </div>
+                                        <!--the list displayed in each card includes: removal, checking, etc-->
+                                        <div class="card-block" id="todos[index]" :style="{ 'display' : card.dis }">
+                                            <ul class=" list-group list-group-flush" >
+                                                <li class="todo list-group-item" v-for="(todo, i) in card.items" :style="{'background-color': todo.color, 'display' : todo.showT }">
+                                                    <div>
+                                                        <label v-if="index!=0" class="todoright btn arrow" @click="listItemLeft(cards, card, index, todo, i)">&larr;</label>
+                                                        <input class="toggle" type="checkbox" @click="checkCardBox(todo, card, i)" v-cloak>
+                                                        <label class="itembtn btn" v-html="todo.item" @click="toggleTModal(todo)">{{ todo.item }}</label>
+                                                        <label class="removeT btn" @click="removeListItem(card, todo, index, i)">x</label>
+                                                        <label v-if="index!=(cards.length - 1)" class="todoright btn arrow" @click="listItemRight(cards, card, index, todo, i)">&rarr;</label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <!--footer contains info on how to add a new card w description, category, etc-->
+                                        <div class="card-footer" :style="{'background-color': card.headcol}" id="inputt" v-cloak>
+                                            <form class="footer-main" v-if="card.isAddingLink" @submit.prevent="addListItem(card, this.newTodo, index)">
+                                                <input class="bottom" placeholder="Add a new item" v-model="newTodo">
+                                                <input class="bottom" placeholder="Add description" v-model="newD">
+                                                <input class="bottom" placeholder="Add category" v-model="newTodoCat">
+                                                <input class="new-list" placeholder="Add due date" v-model="newDue">  
+                                                <input class="new-list" placeholder="Add color" v-model="newColor">  
+                                                <input type="submit" value="Add Card" @click="card.isAddingLink = false"/>
+                                            </form>
+                                            <svg v-else @click="card.isAddingLink = true" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M1344 800v64q0 14-9 23t-23 9h-352v352q0 14-9 23t-23 9h-64q-14 0-23-9t-9-23v-352h-352q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h352v-352q0-14 9-23t23-9h64q14 0 23 9t9 23v352h352q14 0 23 9t9 23zm128 448v-832q0-66-47-113t-113-47h-832q-66 0-113 47t-47 113v832q0 66 47 113t113 47h832q66 0 113-47t47-113zm128-832v832q0 119-84.5 203.5t-203.5 84.5h-832q-119 0-203.5-84.5t-84.5-203.5v-832q0-119 84.5-203.5t203.5-84.5h832q119 0 203.5 84.5t84.5 203.5z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <!--list modal that allows you to edit names as well as add comments, etc-->
+                                    <template v-if="card.cmodal == true">
+                                        <div class="modal-out">
+                                            <div class="modal-mid">
+                                                <div class="modal-in" :style="{'background-color': card.headcol}">
+                                                    <div class="modal-header">
+                                                        <input class="editca" v-model="card.name" placeholder="re-enter card name" v-if="card.edit" @keyup.enter="cardEdit(card)" type="text">
+                                                        <label class="innerlist" v-if="!card.edit">{{card.name}}</label>
+                                                        <label class="carded btn" @click="card.edit = true" v-if="!card.edit">edit</label>
+                                                        <button class="modal-close" @click="card.cmodal = false">x</button>
+                                                    </div>
+                                                    <div class="modal-description">
+                                                        <p>Description: {{ card.descrip }}</p>
+                                                        <p>Created: {{card.date}}</p>
+                                                        <p>Category: {{card.category}}</p>
+                                                    </div>
+                                                    <div class="modal-content">
+                                                        <div class="modal-body" v-for="(todo, key) in card.items">
+                                                            <ul class="modal-list">
+                                                                <li>
+                                                                    <input class="editin" v-model="todo.item" placeholder="re-enter label" v-if="todo.edit" @keyup.enter="todoEdit(card, todo, key)" type="text">
+                                                                    <label class="innerlist" v-if="!todo.edit">{{todo.item}}</label>
+                                                                    <label class="editli" @click="todo.edit = true" v-if="!todo.edit">edit</label>
+                                                                </li>
+                                                            </ul>
+
+                                                        </div>
+                                                        <ul class="inlist">
+                                                            <input class="innerli" placeholder="Add a comment" v-model="newInLi" @keyup.enter="addInnerListItem(card, index)">
+                                                            <li class="inli" v-for="initem in cards[index].initems">
+                                                                <label class="inlabel">{{ initem.initem }}  </label>
+                                                            </li>
+                                                        </ul>
+
+                                                        <ul class="pics">
+                                                            <form @submit.prevent="storeImageLi(card.name)">
+                                                                <label id="imgTitle1">Image Title:</label>
+                                                                <input type="text" class="imgTitle" v-model="newImgTitle" placeholder="Must add image name">
+                                                                <input type="file" class="infiles" name="files[]" />
+                                                                <input type="submit" value="Add Image"/>
+                                                            </form>
+
+                                                            <li class="image" v-for="img in cardImgs(images, card)">
+                                                                <label>{{ img.title }}</label>
+                                                                <p>
+                                                                    <img class="liimg" :src="img.url" alt="cardimg">
+                                                                </p>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <!--list item's modal that allows you to edit and add various images, comments, todos, etc-->
+                                    <template v-for="(todo, idx) in card.items" v-if="todo.tmodal == true">
+                                        <div class="modal-out">
+                                            <div class="modal-mid">
+                                                <div class="modal-in" :style="{'background-color': todo.color}">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <label v-html="todo.item"></label>
+                                                            <button class="modal-close" @click="todo.tmodal = false">x</button>
+                                                        </div>
+                                                        <div class="modal-description">
+                                                            <p>Due: {{ todo.due }}</p>
+                                                            <p>Description: {{ todo.d }}</p>
+                                                            <p>Created: {{todo.date }}</p>
+                                                            <p>Tasks Remaining: {{todo.l}}</p>
+                                                            <p>Category: {{todo.cate}}</p>
+                                                        </div>
+                                                        <div class="modal-main">
+                                                            <ul class="inlist">
+                                                                <input class="innerli" placeholder="Add a comment" v-model="newInCaLi" @keyup.enter="addInnerCardItem(card, todo, idx)">
+                                                                <li class="incali" v-for="incaitem in todo.incaitems">
+                                                                    <label class="incalabel"></label> {{ incaitem.user }} <label>&rarr;</label><label>{{ incaitem.incaitem }}</label>
+                                                                </li>
+                                                            </ul>
+                                                            <ul class="inlist">
+                                                                <input class="innerli" placeholder="Add a new todo" v-model="newInTodo" @keyup.enter="addInnerTodo(card, todo, idx)">
+                                                                <li class="incali" v-for="(incatodo, x) in todo.incatodos">
+                                                                    <input class="toggle" type="checkbox" @click="checkTodoBox(incatodo, x, todo, idx, card)" v-cloak>
+                                                                    <label class="intodolabel">{{ incatodo.incatodo }}</label>
+
+                                                                </li>
+                                                            </ul>
+                                                            <ul class="pics">
+                                                                <form @submit.prevent="storeImageLi(card.name, idx, todo)">
+                                                                    <label id="imgTitle">Image Title:</label>
+                                                                    <input type="text" class="imgTitle" v-model="newImgTitle" placeholder="Must add image name">
+                                                                    <input type="file" class="infiles" name="files[]" />
+                                                                    <input type="submit" value="Add Image"/>
+                                                                </form>
+
+                                                                <li class="image" v-for="img in cardImgs(images, card, idx, todo)">
+                                                                    <label>{{ img.title }}</label>
+                                                                    <p>
+                                                                        <img class="liimg" :src="img.url" alt="liimg">
+                                                                    </p>
+                                                                </li>
+                                                            </ul>
+                                                            <ul class="inusers">
+                                                                <label>Assign a user to card: </label>
+                                                                <input class="innerusr" placeholder="Enter a user's email" v-model="inUsr" @keyup.enter="addInnerUser(users, card, todo, idx)">
+                                                                <li class="incali" v-for="usr in todo.inusr">
+                                                                    <label class="intodolabel">{{ usr.name }}, {{usr.email}}</label>
+
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Part of the bootstrap 4 instructions require these scripts to works - especially with functionalities like dropdowns-->
+            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        </div>
+    </body>

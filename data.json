@@ -1,0 +1,142 @@
+[
+{   
+    "cindex":"0",
+    "name":"Groceries",
+    "descrip":"For next trip to the store",
+    "isAddingLink": false,
+    "edit":false,
+    "cmodal":false,
+    "headcol":"#F5F5F5",
+    "dis":"",
+    "hide":false,
+    "collapse":"collapse",
+    "initems": [
+        {
+            "initem": "plan dinner party"
+        },
+        {
+            "initem": "plan meals this week"
+        }
+    ],
+    "items": [
+        {
+        "tindex":"0",
+        "edit":false,
+        "item":"bread", 
+        "due":"Friday",
+        "color":"lightgreen",
+        "d":"for sandwiches",
+        "tmodal":false,
+        "completed":"false"
+        },
+        {
+        "tindex":"1",
+        "edit":false,
+        "item":"milk", 
+        "due":"Friday",
+        "color":"lightblue",
+        "d":"",
+        "tmodal":false,
+        "completed":"false"
+        },
+        {
+        "tindex":"2",
+        "edit":false,
+        "item":"eggs", 
+        "due":"Friday",
+        "color":"#c94c4c",
+        "d":"SUPER URGENT",
+        "tmodal":false,
+        "completed":"false"
+        }
+        ]
+},
+{
+    "cindex":"1",
+    "name":"School Work",
+    "descrip":"School work due this week",
+    "isAddingLink": false,
+    "edit":false,
+    "cmodal":false,
+    "headcol":"#d5f4e6",
+    "dis":"",
+    "hide":false,
+    "collapse":"collapse",
+    "initems": [
+        {
+            "initem": "spring break next week!! freedom!"
+        }
+    ],
+    "items": [
+        {
+        "tindex":"0",
+        "edit":false,
+        "item":"CS250 exam", 
+        "due":"Friday",
+        "color":"#c94c4c",
+        "tmodal":false,
+        "d":"study ppts",
+        "completed":"false"
+        },
+        {
+        "tindex":"1",
+        "edit":false,
+        "item":"PD reading",
+        "due":"Friday",
+        "color":"lightgreen",
+        "tmodal":false,
+        "d":"",
+        "completed":"false"
+        },
+        {
+        "tindex":"2",
+        "edit":false,
+        "item":"Web Dev project", 
+        "due":"Tuesday",
+        "color":"#f2ae72",
+        "tmodal":false,
+        "d":"what is even happening in this class",
+        "completed":"false"
+        }
+        ]
+},
+{
+    "cindex":"2",
+    "name":"Random",
+    "descrip":"Various other stuff",
+    "isAddingLink": false,
+    "edit":false,
+    "cmodal":false,
+    "headcol":"#e06377",
+    "dis":"",
+    "hide":false,
+    "collapse":"collapse",
+    "initems": [
+        {
+            "initem": ""
+        }
+    ],
+    "items": [
+        {
+        "tindex":"0",
+        "edit":false,
+        "item":"call Mom", 
+        "due":"Friday",
+        "color":"lightblue",
+        "tmodal":false,
+        "d":"",
+        "completed":"false"
+        },
+        {
+        "tindex":"1",
+        "edit":false,
+        "item":"declare major", 
+        "due":"Tuesday",
+        "color":"lightgreen",
+        "tmodal":false,
+        "d":"by spring break",
+        "completed":"false"
+        }
+        ]
+}  
+]
